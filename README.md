@@ -1,9 +1,7 @@
 # Remora
-Simple GraphQl server.
+Simple GraphQl server with 3 line code.
 
-## How to use
-
-### Project structure
+## Project structure
 
 ```
 your_remora_project/
@@ -18,8 +16,8 @@ your_remora_project/
 ### `server.ts`
 
 ```typescript
-import Remora from '../mod.ts';
-const server = new Remora("./lambdas");
+import Remora from 'https://deno.land/x/remora/mod.ts';
+const server = new Remora("./lambdas"); // import your lambda directory
 await server.listen();
 ```
 
