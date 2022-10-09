@@ -6,8 +6,10 @@ interface AnyObject {
 
 class Remora {
     path: string;
+    server: Server;
     constructor(path: string) {
         this.path = path;
+        this.server = new Server();
     }
 
     async readDirs() {
@@ -52,14 +54,17 @@ class Remora {
         return { resolvers, globGql };
     }
 
+    async use(middleware: any){
+        await this.server.use(middleware);
+    }
+
     async listen(port: number = parseInt(Deno.env.get("PORT")) || 3000) {
-        const server = new Server();
         const { resolvers, globGql } = await this.importModules();
         const typeDefs = gql`
         ${globGql.join("\n")}
         `
         const schema = makeExecutableSchema({ resolvers, typeDefs });
-        server.post(
+        this.server.post(
             "/graphql",
             async (ctx: any, next: any) => {
                 const resp = await GraphQLHTTP<Request>({ schema, context: (request) => ({ request }), graphiql: true })(ctx.req);
@@ -68,7 +73,7 @@ class Remora {
             },
         );
         console.log(`Graphql server listen to http://localhost:${port}`);
-        await server.listen({ port });
+        await this.server.listen({ port });
     }
 
 }
