@@ -1,4 +1,4 @@
-import { Server, makeExecutableSchema, GraphQLHTTP, gql, existsSync } from './deps.ts';
+import { Server, buildSchema, GraphQLHTTP, existsSync } from './deps.ts';
 
 interface AnyObject {
     [key: string]: any
@@ -21,10 +21,7 @@ class Remora {
     }
 
     async importModules() {
-        const resolvers: AnyObject = {
-            Query : {},
-            Mutation : {}
-        };
+        const rootValue: AnyObject = {};
         const globGql : string[] = [];
         const moduleDir = await this.readDirs();
         for await (const func of moduleDir){
@@ -34,24 +31,18 @@ class Remora {
             const schemaPath = indexPath+'/schema.gql';
             if (existsSync(queryPath)){
                 const module = await import(queryPath);
-                Object.assign(resolvers.Query, module);
+                Object.assign(rootValue, module);
             }
             if (existsSync(mutationPath)){
                 const module = await import(mutationPath);
-                Object.assign(resolvers.Mutation, module);
+                Object.assign(rootValue, module);
             }
             if (existsSync(schemaPath)){
                 const gqlData = await Deno.readTextFile(schemaPath);
                 globGql.push(gqlData);
             }
         }
-        if(Object.keys(resolvers.Query).length === 0){
-            delete resolvers.Query;
-        }
-        if(Object.keys(resolvers.Mutation).length === 0){
-            delete resolvers.Mutation;
-        }
-        return { resolvers, globGql };
+        return { rootValue, globGql };
     }
 
     async use(middleware: any){
@@ -59,15 +50,14 @@ class Remora {
     }
 
     async listen(port: number = parseInt(Deno.env.get("PORT")) || 3000) {
-        const { resolvers, globGql } = await this.importModules();
-        const typeDefs = gql`
+        const { rootValue, globGql } = await this.importModules();
+        const schema = buildSchema(`
         ${globGql.join("\n")}
-        `
-        const schema = makeExecutableSchema({ resolvers, typeDefs });
+        `);
         this.server.post(
             "/graphql",
             async (ctx: any, next: any) => {
-                const resp = await GraphQLHTTP<Request>({ schema, context: (request) => ({ request }), graphiql: true })(ctx.req);
+                const resp = await GraphQLHTTP<Request>({ schema, rootValue, context: (request) => ({ request }), graphiql: true })(ctx.req);
                 ctx.res = resp;
                 await next();
             },

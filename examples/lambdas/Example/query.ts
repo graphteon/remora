@@ -25,14 +25,14 @@ var coursesData = [
     }
 ]
 
-export function getExample(_root: undefined, args) {
+export function getExample(args) {
     var id = args.id;
     return coursesData.filter(course => {
         return course.id == id;
     })[0];
 }
 
-export function getExamples(_root: undefined, args) {
+export function getExamples(args) {
     if (args.topic) {
         var topic = args.topic;
         return coursesData.filter(course => course.topic === topic);
