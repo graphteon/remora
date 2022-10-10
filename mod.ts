@@ -25,7 +25,7 @@ class Remora {
         const globGql : string[] = [];
         const moduleDir = await this.readDirs();
         for await (const func of moduleDir){
-            const indexPath = Deno.cwd()+'/'+this.path+'/'+func;
+            const indexPath = 'file://'+Deno.cwd()+'/'+this.path+'/'+func;
             const queryPath = indexPath+'/query.ts';
             const mutationPath = indexPath+'/mutation.ts';
             const schemaPath = indexPath+'/schema.gql';

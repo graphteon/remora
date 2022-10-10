@@ -1,4 +1,4 @@
-import Remora from '../mod.ts';
+import Remora from 'https://deno.land/x/remora/mod.ts';
 
 /*
 
