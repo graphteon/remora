@@ -1,4 +1,4 @@
-import Remora from '../mod.ts';
+import { Remora } from './deps.ts';
 
 /*
 

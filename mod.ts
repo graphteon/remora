@@ -4,7 +4,7 @@ interface AnyObject {
     [key: string]: any
 }
 
-class Remora {
+export class Remora {
     path: string;
     server: Server;
     constructor(path: string) {
@@ -30,11 +30,11 @@ class Remora {
             const mutationPath = indexPath+'/mutation.ts';
             const schemaPath = indexPath+'/schema.gql';
             if (existsSync(queryPath)){
-                const module = await import(queryPath);
+                const module = await import('file://'+queryPath);
                 Object.assign(rootValue, module);
             }
             if (existsSync(mutationPath)){
-                const module = await import(mutationPath);
+                const module = await import('file://'+mutationPath);
                 Object.assign(rootValue, module);
             }
             if (existsSync(schemaPath)){
@@ -67,4 +67,3 @@ class Remora {
     }
 
 }
-export default Remora;
