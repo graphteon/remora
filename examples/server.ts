@@ -1,5 +1,4 @@
-import { Remora } from './deps.ts';
-
+import { Remora } from 'https://deno.land/x/remora/mod.ts'
 /*
 
 TEST QUERY

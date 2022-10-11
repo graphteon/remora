@@ -1,4 +1,4 @@
-import { Remora } from '../mod.ts';
+import { Remora } from 'https://deno.land/x/remora/mod.ts'
 
 async function middleware(ctx: any, next: any) {
     console.log("midleware print method :", ctx.req.method);

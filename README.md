@@ -16,7 +16,7 @@ your_remora_project/
 ### `server.ts`
 
 ```typescript
-import Remora from 'https://deno.land/x/remora/mod.ts';
+import { Remora } from 'https://deno.land/x/remora/mod.ts';
 const server = new Remora("./lambdas"); // import your lambda directory
 await server.listen();
 ```
